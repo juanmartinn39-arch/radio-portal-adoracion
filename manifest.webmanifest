@@ -1,14 +1,36 @@
 {
-  "name":"Radio Portal de Adoración",
-  "short_name":"Radio Portal",
-  "description":"Radio Portal de Adoración — una voz de esperanza para las naciones.",
-  "start_url":"./",
-  "scope":"./",
-  "display":"standalone",
-  "background_color":"#020b18",
-  "theme_color":"#031329",
-  "icons":[
-    {"src":"icon-192.png","sizes":"192x192","type":"image/png","purpose":"any maskable"},
-    {"src":"icon-512.png","sizes":"512x512","type":"image/png","purpose":"any maskable"}
+  "id": "./",
+  "name": "Radio Portal de Adoración",
+  "short_name": "Radio Portal",
+  "description": "Una voz de esperanza para las naciones. Escucha Radio Portal de Adoración.",
+  "lang": "es-AR",
+  "dir": "ltr",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": [
+    "window-controls-overlay",
+    "standalone"
+  ],
+  "orientation": "any",
+  "background_color": "#020b18",
+  "theme_color": "#031329",
+  "categories": [
+    "music",
+    "entertainment"
+  ],
+  "icons": [
+    {
+      "src": "./icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
   ]
 }
