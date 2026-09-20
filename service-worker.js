@@ -1,4 +1,4 @@
-const CACHE_NAME = "radio-portal-v2";
+const CACHE_NAME = "radio-portal-v5";
 const APP_SHELL = [
   "./",
   "./index.html",
