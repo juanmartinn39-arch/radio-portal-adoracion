@@ -18,6 +18,19 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-192.png">
 <title>Radio Portal de Adoración</title>
+<meta name="description" content="Una voz de esperanza para las naciones. Escuchá Radio Portal de Adoración en vivo.">
+<link rel="canonical" href="https://juanmartinn39-arch.github.io/radio-portal-adoracion/">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="es_AR">
+<meta property="og:site_name" content="Radio Portal de Adoración">
+<meta property="og:title" content="Radio Portal de Adoración — En Vivo">
+<meta property="og:description" content="Una voz de esperanza para las naciones. Entrá y escuchá la radio en vivo.">
+<meta property="og:url" content="https://juanmartinn39-arch.github.io/radio-portal-adoracion/">
+<meta property="og:image" content="https://juanmartinn39-arch.github.io/radio-portal-adoracion/facebook-share.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Radio Portal de Adoración — Entrá y escuchá en vivo">
+<meta name="twitter:card" content="summary_large_image">
 <style>
 :root{--bg:#020b18;--panel:rgba(3,20,39,.88);--panel2:rgba(2,13,28,.92);--cyan:#12d8ff;--blue:#168dff;--pink:#ff185b;--white:#f7fbff;--muted:#b9cce1;--line:#087fe8}
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;min-height:100vh;background:var(--bg);color:var(--white);font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;overflow-x:hidden}
@@ -31,7 +44,7 @@ a,button{font:inherit}button{cursor:pointer}a{text-decoration:none;color:inherit
 .hero-logo{display:block;width:min(270px,64vw);height:min(270px,64vw);margin:2px auto 18px;object-fit:contain;border-radius:50%;background:#eee;border:5px solid #020a13;outline:4px solid var(--cyan);box-shadow:0 0 0 10px rgba(18,216,255,.06),0 0 44px rgba(18,216,255,.55),0 20px 45px rgba(0,0,0,.58)}
 .hero-title{margin:0;text-align:center;font-size:clamp(34px,8vw,50px);line-height:.96;font-weight:950;letter-spacing:-2px;text-shadow:0 0 24px rgba(255,255,255,.12)}.hero-title span{display:block;color:var(--cyan);margin-top:5px}.live.big{display:flex;width:max-content;margin:20px auto 24px;font-size:17px;padding:12px 23px}
 .controls{display:grid;grid-template-columns:72px 92px 72px;gap:30px;align-items:center;justify-content:center;margin-top:4px}.skip{width:72px;height:72px;border-radius:50%;border:2px solid #0b86ec;color:#fff;background:rgba(2,16,32,.75);display:grid;place-items:center;box-shadow:0 0 20px rgba(0,127,255,.2)}.skip svg{width:30px;height:30px;fill:currentColor}.play{width:92px;height:92px;border-radius:50%;border:4px solid var(--cyan);color:#fff;background:radial-gradient(circle at 40% 28%,rgba(15,210,255,.18),rgba(2,14,29,.98) 68%);display:grid;place-items:center;box-shadow:0 0 0 7px rgba(18,216,255,.06),0 0 38px rgba(18,216,255,.58);transition:.15s transform,.15s box-shadow}.play:active{transform:scale(.95)}.play svg{width:39px;height:39px;fill:currentColor}.playing .play{box-shadow:0 0 0 8px rgba(18,216,255,.08),0 0 50px rgba(18,216,255,.82)}
-.wave{height:34px;display:flex;align-items:center;gap:4px;justify-content:center;margin:13px 0 8px}.bar{width:5px;height:8px;border-radius:6px;background:var(--cyan);opacity:.38}.playing .bar{animation:eq .8s ease-in-out infinite alternate}@keyframes eq{to{height:29px;opacity:1}}.bar:nth-child(2){animation-delay:.08s}.bar:nth-child(3){animation-delay:.16s}.bar:nth-child(4){animation-delay:.24s}.bar:nth-child(5){animation-delay:.32s}.bar:nth-child(6){animation-delay:.4s}.bar:nth-child(7){animation-delay:.48s}
+.wave{height:34px;display:flex;align-items:center;gap:4px;justify-content:center;margin:13px 0 8px}.bar{width:5px;height:8px;border-radius:6px;background:var(--cyan);opacity:.38}.wave.playing .bar{animation:eq .8s ease-in-out infinite alternate}@keyframes eq{to{height:29px;opacity:1}}.bar:nth-child(2){animation-delay:.08s}.bar:nth-child(3){animation-delay:.16s}.bar:nth-child(4){animation-delay:.24s}.bar:nth-child(5){animation-delay:.32s}.bar:nth-child(6){animation-delay:.4s}.bar:nth-child(7){animation-delay:.48s}
 .volume{width:min(570px,95%);display:flex;align-items:center;gap:13px;margin:5px auto 12px}.volume svg{width:28px;fill:#fff;flex:none}input[type=range]{width:100%;height:5px;accent-color:var(--cyan)}.status{text-align:center;font-size:16px;color:#dce9f7}.status b{font-size:24px;vertical-align:-2px}
 .card{margin:18px 14px 0;padding:20px;border:2px solid rgba(10,130,236,.62);border-radius:28px;background:linear-gradient(135deg,rgba(2,20,40,.9),rgba(1,10,23,.84));box-shadow:0 15px 38px rgba(0,0,0,.35);overflow:hidden}.now{display:grid;grid-template-columns:96px 1fr;gap:17px;align-items:center}.mini-logo{width:96px;height:96px;border-radius:22px;object-fit:cover;border:3px solid var(--cyan);box-shadow:0 0 24px rgba(18,216,255,.42)}.pill{display:inline-flex;align-items:center;gap:7px;padding:8px 13px;border-radius:24px;background:linear-gradient(135deg,#7652ff,#11bfff);font-weight:950;font-size:14px}.now h2{margin:9px 0 4px;font-size:26px;line-height:1.08}.sub{color:#b8cce2;font-weight:750;font-size:16px}
 .verse{position:relative;min-height:205px;background:linear-gradient(90deg,rgba(2,15,31,.98) 0%,rgba(2,15,31,.90) 55%,rgba(2,15,31,.42) 100%),url("bible-scene.jpg") right center/auto 100% no-repeat}.verse-grid{display:grid;grid-template-columns:112px 1fr;gap:20px;align-items:center}.book{width:104px;height:104px;border-radius:50%;display:grid;place-items:center;border:3px solid var(--cyan);background:rgba(1,13,27,.84);box-shadow:0 0 30px rgba(18,216,255,.52);font-size:52px}.verse h3{margin:0 0 10px;color:var(--cyan);font-size:20px;letter-spacing:1.6px}.verse p{font-size:20px;line-height:1.35;font-weight:800;margin:0 0 8px}.ref{color:var(--cyan);font-size:19px;font-weight:950;font-style:italic}
@@ -51,7 +64,7 @@ a,button{font:inherit}button{cursor:pointer}a{text-decoration:none;color:inherit
 /* Onda de radio: decorativa y sincronizada con el estado de reproducción */
 .wave{height:44px;gap:3px;margin:12px auto 9px}
 .bar{width:4px;min-height:5px;height:var(--h,10px);transform-origin:center;background:linear-gradient(180deg,var(--cyan),var(--blue));opacity:.3;box-shadow:0 0 7px rgba(18,216,255,.35)}
-.playing .bar{animation:radioWave .72s ease-in-out infinite alternate;opacity:.95}
+.wave.playing .bar{animation:radioWave .72s ease-in-out infinite alternate;opacity:.95}
 @keyframes radioWave{0%{height:var(--h,10px);transform:scaleY(.45);opacity:.45}50%{height:calc(var(--h,10px) + 13px);transform:scaleY(1);opacity:1}100%{height:var(--h2,18px);transform:scaleY(.7);opacity:.7}}
 .wave .bar:nth-child(1){--h:7px;--h2:12px;animation-delay:.03s}
 .wave .bar:nth-child(2){--h:14px;--h2:25px;animation-delay:.11s}
@@ -118,6 +131,28 @@ a,button{font:inherit}button{cursor:pointer}a{text-decoration:none;color:inherit
 .modal-head{display:flex;align-items:center;gap:10px;padding:14px 15px;border-bottom:1px solid rgba(18,216,255,.38);background:rgba(2,13,27,.96);flex:none}.modal-head h2{margin:0;font-size:20px;flex:1}.close-modal{width:42px;height:42px;border-radius:50%;border:1px solid rgba(18,216,255,.55);background:#061a31;color:#fff;font-size:26px}.modal-body{padding:15px;overflow:auto;-webkit-overflow-scrolling:touch}.bible-top{border:2px solid rgba(18,216,255,.58);border-radius:20px;padding:14px;background:linear-gradient(135deg,rgba(5,30,55,.95),rgba(2,13,28,.94));box-shadow:0 12px 30px rgba(0,0,0,.3)}.bible-top strong{display:block;color:var(--cyan);font-size:18px}.bible-top small{color:#b9cce1}.bible-controls{display:grid;grid-template-columns:1.35fr .65fr auto;gap:8px;margin-top:12px}.bible-controls select,.bible-controls button,.bible-search{min-height:44px;border-radius:13px;border:1px solid rgba(18,216,255,.48);background:#061a30;color:#fff;padding:8px 10px}.bible-controls button{background:linear-gradient(135deg,#0c9de7,#086bd8);font-weight:900}.bible-search-row{display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:9px}.bible-search{width:100%;margin:0}.bible-search-btn{min-height:44px;border-radius:13px;border:0;background:linear-gradient(135deg,#0c9de7,#086bd8);color:#fff;font-weight:900;padding:8px 13px}.bible-content{margin-top:13px;border:1px solid rgba(12,127,226,.5);border-radius:20px;padding:16px;background:rgba(1,10,23,.82);line-height:1.65}.bible-content h3{color:var(--cyan);margin:0 0 12px}.verse-line{margin:0 0 11px;font-size:17px;color:#edf6ff}.verse-num{color:var(--cyan);font-weight:950;margin-right:7px}.bible-note{margin-top:14px;color:#8fa7bf;font-size:11px;line-height:1.45}.chat-name{display:flex;gap:8px;margin-bottom:12px}.chat-name input,.chat-compose input{flex:1;min-width:0;min-height:44px;border-radius:13px;border:1px solid rgba(18,216,255,.5);background:#061a30;color:#fff;padding:9px 12px;outline:none}.chat-name button,.chat-compose button{min-width:52px;border:0;border-radius:13px;background:#078fe9;color:#fff;font-weight:950}.chat-room{display:flex;flex-direction:column;gap:9px;min-height:260px}.chat-msg{padding:10px 12px;border:1px solid rgba(18,216,255,.2);border-radius:16px;background:rgba(3,23,42,.88)}.chat-msg .who{font-weight:950;color:var(--cyan);font-size:13px}.chat-msg .time{float:right;color:#6f88a3;font-size:10px}.chat-msg p{margin:5px 0 0;color:#edf5ff;font-size:14px;white-space:pre-wrap;word-break:break-word}.chat-compose{display:flex;gap:8px;margin-top:12px;position:sticky;bottom:0;background:linear-gradient(180deg,transparent,#020b18 22%);padding-top:14px}.chat-info{font-size:11px;color:#91a9c0;margin:0 0 12px}.bottom{grid-template-columns:repeat(5,1fr)}
 @media(max-width:520px){.modal-card{height:91vh;border-radius:25px 25px 0 0}.bible-controls{grid-template-columns:1fr 82px}.bible-controls button{grid-column:1/-1}.bible-content{padding:13px}.verse-line{font-size:16px}.chat-compose button{min-width:50px}}
 
+
+
+/* ===== V8: MENÚ LATERAL ===== */
+.drawer-overlay{position:fixed;inset:0;z-index:94;background:rgba(0,6,15,.68);backdrop-filter:blur(3px);opacity:0;visibility:hidden;transition:.22s opacity,.22s visibility}
+.drawer-overlay.open{opacity:1;visibility:visible}
+.drawer{position:fixed;z-index:95;top:0;bottom:0;left:0;width:min(390px,88vw);transform:translateX(-105%);transition:.26s transform cubic-bezier(.2,.8,.2,1);background:linear-gradient(180deg,#03182f 0%,#020c1b 68%,#03152b 100%);border-right:2px solid rgba(18,216,255,.8);box-shadow:18px 0 60px rgba(0,0,0,.62),0 0 40px rgba(18,216,255,.16);display:flex;flex-direction:column;padding:max(14px,env(safe-area-inset-top)) 13px max(18px,env(safe-area-inset-bottom));overflow:hidden}
+.drawer.open{transform:translateX(0)}
+body.drawer-open{overflow:hidden}
+.drawer-head{display:grid;grid-template-columns:66px 1fr 42px;align-items:center;gap:11px;padding:6px 5px 12px;border-bottom:1px solid rgba(18,216,255,.26)}
+.drawer-logo{width:62px;height:62px;border-radius:50%;object-fit:cover;border:2px solid var(--cyan);box-shadow:0 0 20px rgba(18,216,255,.44)}
+.drawer-title{margin:0;font-size:27px;font-weight:950;line-height:1}.drawer-title small{display:block;margin-top:5px;color:var(--cyan);font-size:10px;letter-spacing:1.8px;font-weight:850;text-transform:uppercase}
+.drawer-close{width:40px;height:40px;border:1px solid rgba(18,216,255,.4);border-radius:50%;background:#071e37;color:#fff;font-size:25px;line-height:1}
+.drawer-nav{overflow:auto;-webkit-overflow-scrolling:touch;padding:11px 1px 18px;scrollbar-width:thin;scrollbar-color:#0e82cf transparent}
+.drawer-item{width:100%;min-height:50px;margin:4px 0;display:grid;grid-template-columns:42px 1fr 18px;align-items:center;gap:8px;padding:8px 10px;border:1px solid transparent;border-radius:15px;background:transparent;color:#edf7ff;text-align:left;font-weight:800;font-size:15px}
+.drawer-item:hover,.drawer-item:focus-visible{background:rgba(6,67,112,.45);border-color:rgba(18,216,255,.38);outline:none}.drawer-item.primary{background:linear-gradient(90deg,rgba(3,129,207,.55),rgba(4,72,119,.24));border-color:rgba(18,216,255,.42)}
+.drawer-icon{width:36px;height:36px;border-radius:11px;display:grid;place-items:center;color:var(--cyan);background:rgba(8,92,148,.18);font-size:22px;font-weight:950}.drawer-icon svg{width:23px;height:23px;fill:currentColor}.drawer-item .chev{color:#82a9c9;font-size:22px;text-align:right}.drawer-item.facebook .drawer-icon{color:#4b8dff}.drawer-item.instagram .drawer-icon{color:#ff4fb2}.drawer-item.whatsapp .drawer-icon{color:#2be07f}.drawer-item.install .drawer-icon{color:#fff;background:linear-gradient(145deg,#0aa5e9,#126de1)}
+.drawer-divider{height:1px;background:linear-gradient(90deg,transparent,rgba(18,216,255,.45),transparent);margin:8px 7px}
+.drawer-more{display:none;padding:0 4px 3px}.drawer-more.open{display:block}.drawer-more .drawer-item{font-size:14px;min-height:46px;padding-left:17px;background:rgba(4,35,62,.38)}
+.drawer-foot{flex:none;border-top:1px solid rgba(18,216,255,.24);padding:11px 9px 2px;text-align:center;color:#9bb6ce;font-size:10px;letter-spacing:1.7px}.drawer-foot b{display:block;color:var(--cyan);font-size:12px;margin-bottom:4px}
+.menu-hint{margin:17px 14px 0;border:1px solid rgba(18,216,255,.32);border-radius:20px;padding:13px 15px;background:rgba(3,21,39,.7);display:flex;align-items:center;gap:12px;color:#bcd0e3;font-size:13px}.menu-hint strong{display:block;color:#fff;font-size:14px;margin-bottom:2px}.menu-hint .hint-icon{width:42px;height:42px;border-radius:13px;display:grid;place-items:center;background:rgba(18,216,255,.12);color:var(--cyan);font-size:25px;flex:none}
+@media(max-width:520px){.drawer{width:min(350px,91vw)}.drawer-item{min-height:48px;font-size:14px}.drawer-head{grid-template-columns:58px 1fr 38px}.drawer-logo{width:54px;height:54px}.drawer-title{font-size:23px}.menu-hint{margin-left:9px;margin-right:9px}}
+
 </style>
 </head>
 <body>
@@ -145,8 +180,8 @@ a,button{font:inherit}button{cursor:pointer}a{text-decoration:none;color:inherit
     <button class="play" id="playBtn" aria-label="Reproducir radio"><svg id="playIcon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></button>
     <button class="skip" id="nextBtn" aria-label="Siguiente"><svg viewBox="0 0 24 24"><path d="M15 5h3v14h-3V5zM4.5 5l7.5 7-7.5 7V5z"/></svg></button>
   </div>
-  <div class="wave" aria-hidden="true"><span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span></div>
-  <div class="volume"><svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 4V5L7 9H3zm13.5 3a4.5 4.5 0 0 0-2.1-3.8v7.6a4.5 4.5 0 0 0 2.1-3.8zm0-8.1v2.1c2.5 1.2 4.2 3.4 4.2 6s-1.7 4.8-4.2 6v2.1c3.7-1.3 6.3-4.4 6.3-8.1s-2.6-6.8-6.3-8.1z"/></svg><input id="volume" type="range" min="0" max="1" step=".01" value=".85" aria-label="Volumen"><svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 4V5L7 9H3zm13.5 3a4.5 4.5 0 0 0-2.1-3.8v7.6a4.5 4.5 0 0 0 2.1-3.8z"/></svg></div>
+  <div class="wave" id="radioWave" aria-hidden="true"><span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span></div>
+  <div class="volume"><svg viewBox="0 0 24 24" aria-label="Volumen bajo"><path d="M3 9v6h4l5 4V5L7 9H3zm13.5 3a4.5 4.5 0 0 0-2.1-3.8v7.6a4.5 4.5 0 0 0 2.1-3.8z"/></svg><input id="volume" type="range" min="0" max="1" step=".01" value=".85" aria-label="Volumen"><svg viewBox="0 0 24 24" aria-label="Volumen alto"><path d="M3 9v6h4l5 4V5L7 9H3zm13.5 3a4.5 4.5 0 0 0-2.1-3.8v7.6a4.5 4.5 0 0 0 2.1-3.8zm0-8.1v2.1c2.5 1.2 4.2 3.4 4.2 6s-1.7 4.8-4.2 6v2.1c3.7-1.3 6.3-4.4 6.3-8.1s-2.6-6.8-6.3-8.1z"/></svg></div>
   <div class="status"><b>🔴</b> Estás escuchando Radio Portal de Adoración</div>
 </section>
 
@@ -164,21 +199,50 @@ a,button{font:inherit}button{cursor:pointer}a{text-decoration:none;color:inherit
   </div>
 </section>
 
-<section class="socials" id="more">
-  <a class="social whats" href="https://wa.me/5491134093529" target="_blank" rel="noopener" aria-label="WhatsApp"><div class="ico"><svg viewBox="0 0 24 24"><path d="M12.04 2A9.94 9.94 0 0 0 2.1 11.93c0 1.75.46 3.46 1.34 4.97L2 22l5.25-1.38a9.95 9.95 0 1 0 4.79-18.62zm0 18.13a8.17 8.17 0 0 1-4.16-1.14l-.3-.18-3.12.82.83-3.04-.2-.31a8.14 8.14 0 1 1 6.95 3.85zm4.47-6.11c-.24-.12-1.42-.7-1.64-.78-.22-.08-.38-.12-.54.12-.16.24-.62.78-.76.94-.14.16-.28.18-.52.06-.24-.12-1-.37-1.91-1.18-.7-.62-1.18-1.39-1.32-1.63-.14-.24-.01-.37.1-.49.1-.1.24-.28.36-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.54-1.3-.74-1.78-.2-.47-.4-.4-.54-.4h-.46c-.16 0-.42.06-.64.3-.22.24-.84.82-.84 2s.86 2.32.98 2.48c.12.16 1.69 2.58 4.09 3.62.57.25 1.02.4 1.37.51.58.18 1.1.16 1.51.1.46-.07 1.42-.58 1.62-1.15.2-.56.2-1.04.14-1.14-.06-.1-.22-.16-.46-.28z"/></svg></div><strong>WhatsApp</strong></a>
-  <a class="social" href="https://www.facebook.com/share/1BvkyrbHyq/" target="_blank" rel="noopener" aria-label="Facebook"><div class="ico"><svg viewBox="0 0 24 24"><path d="M14 8h3V4.5c-.52-.07-1.56-.15-2.97-.15-2.94 0-4.95 1.8-4.95 5.1V12H5.8v3.9h3.28V24h4.03v-8.1h3.33l.53-3.9h-3.86V9.7c0-1.13.31-1.7 1.89-1.7z"/></svg></div><strong>Facebook</strong></a>
-  <a class="social ig" href="https://www.instagram.com/portaldeadoracionprofetico?stkn=MXNkcnFwOTliOG82bg==" target="_blank" rel="noopener" aria-label="Instagram"><div class="ico"><svg viewBox="0 0 24 24"><path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5zm0 2a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3H7zm5 3.5A4.5 4.5 0 1 1 7.5 12 4.5 4.5 0 0 1 12 7.5zm0 2A2.5 2.5 0 1 0 14.5 12 2.5 2.5 0 0 0 12 9.5zM17.5 6.5a1 1 0 1 1-1 1 1 1 0 0 1 1-1z"/></svg></div><strong>Instagram</strong></a>
-  <button class="social" id="shareBtn" type="button" aria-label="Compartir página"><div class="ico"><svg viewBox="0 0 24 24"><path d="M18 16a3 3 0 0 0-2.24 1.01L8.9 13.45a3.2 3.2 0 0 0 0-2.9l6.86-3.56A3 3 0 1 0 15 5a3 3 0 0 0 .1.76L8.24 9.32A3 3 0 1 0 8.24 14.7l6.86 3.56A3 3 0 1 0 18 16z"/></svg></div><strong>Compartir</strong><div class="share-text">Comparte esta app</div></button>
+<section class="menu-hint" aria-label="Accesos rápidos en el menú lateral">
+  <div class="hint-icon">☰</div>
+  <div><strong>Todos los accesos, en un solo lugar</strong>Usá el menú lateral para redes, compartir, instalar la app y más.</div>
 </section>
 </main>
 </div>
+
+
+<div class="drawer-overlay" id="drawerOverlay" aria-hidden="true"></div>
+<aside class="drawer" id="sideDrawer" aria-hidden="true" aria-label="Menú lateral">
+  <div class="drawer-head">
+    <img class="drawer-logo" src="./icon-192.png" alt="Logo Radio Portal de Adoración">
+    <h2 class="drawer-title">Menú<small>Radio Portal de Adoración</small></h2>
+    <button class="drawer-close" id="drawerClose" type="button" aria-label="Cerrar menú">×</button>
+  </div>
+  <nav class="drawer-nav" aria-label="Accesos de la radio">
+    <button class="drawer-item primary" id="menuHome" type="button"><span class="drawer-icon">⌂</span><span>Inicio</span><span class="chev">›</span></button>
+    <button class="drawer-item" id="menuProgram" type="button"><span class="drawer-icon">◉</span><span>Programación</span><span class="chev">›</span></button>
+    <button class="drawer-item" id="menuBible" type="button"><span class="drawer-icon">📖</span><span>Biblia</span><span class="chev">›</span></button>
+    <button class="drawer-item" id="menuChat" type="button"><span class="drawer-icon">💬</span><span>Chat en vivo</span><span class="chev">›</span></button>
+    <div class="drawer-divider"></div>
+    <a class="drawer-item whatsapp" href="https://wa.me/5491134093529" target="_blank" rel="noopener"><span class="drawer-icon">☎</span><span>WhatsApp</span><span class="chev">›</span></a>
+    <button class="drawer-item whatsapp" id="waShareBtn" type="button"><span class="drawer-icon">↗</span><span>Compartir por WhatsApp</span><span class="chev">›</span></button>
+    <button class="drawer-item facebook" id="fbShareBtn" type="button"><span class="drawer-icon">f</span><span>Compartir en Facebook</span><span class="chev">›</span></button>
+    <a class="drawer-item facebook" href="https://www.facebook.com/share/1BvkyrbHyq/" target="_blank" rel="noopener"><span class="drawer-icon">f</span><span>Abrir Facebook</span><span class="chev">›</span></a>
+    <a class="drawer-item instagram" href="https://www.instagram.com/portaldeadoracionprofetico?stkn=MXNkcnFwOTliOG82bg==" target="_blank" rel="noopener"><span class="drawer-icon">◎</span><span>Abrir Instagram</span><span class="chev">›</span></a>
+    <button class="drawer-item" id="shareBtn" type="button"><span class="drawer-icon">↗</span><span>Compartir la radio</span><span class="chev">›</span></button>
+    <button class="drawer-item install" id="drawerInstallBtn" type="button"><span class="drawer-icon">⇩</span><span>Instalar app</span><span class="chev">›</span></button>
+    <div class="drawer-divider"></div>
+    <button class="drawer-item" id="moreOptionsBtn" type="button" aria-expanded="false"><span class="drawer-icon">⚙</span><span>Más opciones</span><span class="chev" id="moreChevron">›</span></button>
+    <div class="drawer-more" id="drawerMore">
+      <button class="drawer-item" id="wordDayMenuBtn" type="button"><span class="drawer-icon">☀</span><span>Palabra del día</span><span class="chev">›</span></button>
+      <button class="drawer-item" id="copyLinkBtn" type="button"><span class="drawer-icon">⛓</span><span>Copiar enlace de la radio</span><span class="chev">›</span></button>
+    </div>
+  </nav>
+  <div class="drawer-foot"><b>UNA VOZ DE ESPERANZA</b>PARA LAS NACIONES</div>
+</aside>
 
 <nav class="bottom" aria-label="Navegación">
 <a class="active" href="#inicio"><span class="bi"><svg viewBox="0 0 24 24"><path d="M12 3 3 10v10h7v-6h4v6h7V10l-9-7z"/></svg></span>Inicio</a>
 <a href="#now"><span class="bi"><svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 0 0 0 18v-2a7 7 0 0 1 0-14V3zm0 4a5 5 0 0 0 0 10v-2a3 3 0 0 1 0-6V7zm0 4a1 1 0 0 0 0 2v-2z"/></svg></span>Programación</a>
 <button class="nav-btn" id="openBible" type="button"><span class="bi"><svg viewBox="0 0 24 24"><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v17H6.5A2.5 2.5 0 0 0 4 21.5v-17zM6.5 4A.5.5 0 0 0 6 4.5v12.9c.17-.04.33-.06.5-.06H18V4H6.5z"/></svg></span>Biblia</button>
 <button class="nav-btn" id="openChat" type="button"><span class="bi"><svg viewBox="0 0 24 24"><path d="M20 3H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h3v3l4-3h9a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2zm-2 11H6v-2h12v2zm0-4H6V8h12v2z"/></svg></span>Chat</button>
-<a href="#more"><span class="bi"><svg viewBox="0 0 24 24"><path d="M19.43 12.98a7.77 7.77 0 0 0 .05-.98 7.77 7.77 0 0 0-.05-.98l2.11-1.65-2-3.46-2.49 1a7.8 7.8 0 0 0-1.7-.98L15 3h-4l-.35 2.93c-.61.25-1.18.58-1.7.98l-2.49-1-2 3.46 2.11 1.65c-.03.32-.05.65-.05.98s.02.66.05.98l-2.11 1.65 2.49 1 2-3.46 2.11 1.65zM13 15.5A3.5 3.5 0 1 1 13 8a3.5 3.5 0 0 1 0 7.5z"/></svg></span>Más</a>
+<button class="nav-btn" id="openMenuBottom" type="button"><span class="bi"><svg viewBox="0 0 24 24"><path d="M19.43 12.98a7.77 7.77 0 0 0 .05-.98 7.77 7.77 0 0 0-.05-.98l2.11-1.65-2-3.46-2.49 1a7.8 7.8 0 0 0-1.7-.98L15 3h-4l-.35 2.93c-.61.25-1.18.58-1.7.98l-2.49-1-2 3.46 2.11 1.65c-.03.32-.05.65-.05.98s.02.66.05.98l-2.11 1.65 2.49 1 2-3.46 2.11 1.65zM13 15.5A3.5 3.5 0 1 1 13 8a3.5 3.5 0 0 1 0 7.5z"/></svg></span>Más</button>
 </nav>
 
 <!-- Paneles superpuestos: la etiqueta <audio> permanece activa debajo y no se recarga -->
@@ -213,15 +277,20 @@ a,button{font:inherit}button{cursor:pointer}a{text-decoration:none;color:inherit
 <script>
 const audio=document.getElementById('audio'),
 player=document.getElementById('player'),
+wave=document.getElementById('radioWave'),
 btn=document.getElementById('playBtn'),
 icon=document.getElementById('playIcon'),
 vol=document.getElementById('volume'),
 share=document.getElementById('shareBtn'),
 toast=document.getElementById('toast'),
-installBtn=document.getElementById('installBtn');
+installBtn=document.getElementById('installBtn'),
+drawerInstallBtn=document.getElementById('drawerInstallBtn'),
+sideDrawer=document.getElementById('sideDrawer'),
+drawerOverlay=document.getElementById('drawerOverlay');
 
 function setPlaying(on){
   player.classList.toggle('playing',on);
+  wave.classList.toggle('playing',on);
   icon.innerHTML=on
     ? '<path d="M7 5h4v14H7zM13 5h4v14h-4z"/>'
     : '<path d="M8 5v14l11-7z"/>';
@@ -241,15 +310,51 @@ audio.volume=.85;
 
 document.getElementById('prevBtn').onclick=()=>show('Radio en vivo: no hay pista anterior.');
 document.getElementById('nextBtn').onclick=()=>show('Radio en vivo: no hay pista siguiente.');
-document.getElementById('menuBtn').onclick=()=>document.getElementById('more').scrollIntoView({behavior:'smooth'});
+const RADIO_URL='https://juanmartinn39-arch.github.io/radio-portal-adoracion/';
+const SHARE_TEXT='Escuchá Radio Portal de Adoración — una voz de esperanza para las naciones.';
+function openDrawer(){
+  sideDrawer.classList.add('open');
+  drawerOverlay.classList.add('open');
+  sideDrawer.setAttribute('aria-hidden','false');
+  drawerOverlay.setAttribute('aria-hidden','false');
+  document.body.classList.add('drawer-open');
+}
+function closeDrawer(){
+  sideDrawer.classList.remove('open');
+  drawerOverlay.classList.remove('open');
+  sideDrawer.setAttribute('aria-hidden','true');
+  drawerOverlay.setAttribute('aria-hidden','true');
+  document.body.classList.remove('drawer-open');
+}
+document.getElementById('menuBtn').onclick=openDrawer;
+document.getElementById('openMenuBottom').onclick=openDrawer;
+document.getElementById('drawerClose').onclick=closeDrawer;
+drawerOverlay.onclick=closeDrawer;
 
 share.onclick=async()=>{
-  const url='https://juanmartinn39-arch.github.io/radio-portal-adoracion/';
-  const data={title:'Radio Portal de Adoración',text:'Escucha Radio Portal de Adoración — una voz de esperanza para las naciones.',url};
+  const data={title:'Radio Portal de Adoración',text:SHARE_TEXT,url:RADIO_URL};
   try{
     if(navigator.share) await navigator.share(data);
-    else {await navigator.clipboard.writeText(url);show('Enlace de la app copiado.')}
+    else {await navigator.clipboard.writeText(RADIO_URL);show('Enlace de la radio copiado.');}
   }catch(e){}
+};
+document.getElementById('waShareBtn').onclick=()=>{
+  const msg=encodeURIComponent(`${SHARE_TEXT}\n${RADIO_URL}`);
+  window.open(`https://wa.me/?text=${msg}`,'_blank','noopener');
+};
+document.getElementById('fbShareBtn').onclick=()=>{
+  const u='https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(RADIO_URL);
+  window.open(u,'_blank','noopener,noreferrer,width=720,height=650');
+};
+document.getElementById('copyLinkBtn').onclick=async()=>{
+  try{await navigator.clipboard.writeText(RADIO_URL);show('Enlace de la radio copiado.');}
+  catch(e){show(RADIO_URL)}
+};
+document.getElementById('moreOptionsBtn').onclick=()=>{
+  const panel=document.getElementById('drawerMore');
+  const open=panel.classList.toggle('open');
+  document.getElementById('moreOptionsBtn').setAttribute('aria-expanded',String(open));
+  document.getElementById('moreChevron').textContent=open?'⌄':'›';
 };
 
 /* ===== PALABRA DEL DÍA =====
@@ -331,13 +436,16 @@ function isWindows(){
 }
 function setInstallButton(ready){
   installReady = ready;
+  const buttons=[installBtn,drawerInstallBtn].filter(Boolean);
   if(isStandalone){
-    installBtn.hidden = true;
+    buttons.forEach(b=>b.hidden=true);
     return;
   }
-  installBtn.hidden = false;
-  installBtn.innerHTML = ready ? '📲 INSTALAR APP' : '📲 INSTALAR APP';
-  installBtn.title = ready ? 'Instalar Radio Portal de Adoración' : 'Ver instrucciones para instalar';
+  buttons.forEach(b=>{
+    b.hidden=false;
+    if(b===installBtn) b.innerHTML='📲 INSTALAR APP';
+    b.title=ready?'Instalar Radio Portal de Adoración':'Ver instrucciones para instalar';
+  });
 }
 function showInstallHelp(){
   if(isIos()){
@@ -360,29 +468,27 @@ window.addEventListener('beforeinstallprompt', (e) => {
   setInstallButton(true);
 });
 
-installBtn.addEventListener('click', async () => {
+async function requestInstall(){
+  closeDrawer();
   if(!deferredInstallPrompt){
     showInstallHelp();
     return;
   }
-  const promptEvent = deferredInstallPrompt;
-  deferredInstallPrompt = null;
+  const promptEvent=deferredInstallPrompt;
+  deferredInstallPrompt=null;
   try{
     await promptEvent.prompt();
-    const result = await promptEvent.userChoice;
-    if(result.outcome === 'accepted'){
-      show('Instalando Radio Portal de Adoración…');
-    }else{
-      show('La instalación fue cancelada. Puedes intentarlo nuevamente.');
-    }
-  }catch(e){
-    showInstallHelp();
-  }
-});
+    const result=await promptEvent.userChoice;
+    if(result.outcome==='accepted') show('Instalando Radio Portal de Adoración…');
+    else show('La instalación fue cancelada. Puedes intentarlo nuevamente.');
+  }catch(e){showInstallHelp()}
+}
+installBtn.addEventListener('click',requestInstall);
+drawerInstallBtn.addEventListener('click',requestInstall);
 
 window.addEventListener('appinstalled', () => {
   deferredInstallPrompt = null;
-  installBtn.hidden = true;
+  [installBtn,drawerInstallBtn].filter(Boolean).forEach(b=>b.hidden=true);
   show('¡Radio Portal de Adoración quedó instalada!');
 });
 
@@ -648,6 +754,14 @@ document.getElementById('openChat').onclick=()=>{openModal(chatModal);loadChatMe
 document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>closeModal(document.getElementById(b.dataset.close)));
 [bibleModal,chatModal].forEach(m=>m.addEventListener('click',e=>{if(e.target===m)closeModal(m)}));
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){if(bibleModal.classList.contains('open'))closeModal(bibleModal);if(chatModal.classList.contains('open'))closeModal(chatModal)}});
+
+/* ===== V8: ACCIONES DEL MENÚ LATERAL ===== */
+document.getElementById('menuHome').onclick=()=>{closeDrawer();document.getElementById('inicio').scrollIntoView({behavior:'smooth',block:'start'})};
+document.getElementById('menuProgram').onclick=()=>{closeDrawer();document.getElementById('now').scrollIntoView({behavior:'smooth',block:'center'})};
+document.getElementById('menuBible').onclick=()=>{closeDrawer();openModal(bibleModal);loadBibleChapter()};
+document.getElementById('menuChat').onclick=()=>{closeDrawer();openModal(chatModal);loadChatMessages()};
+document.getElementById('wordDayMenuBtn').onclick=()=>{closeDrawer();document.getElementById('verse').scrollIntoView({behavior:'smooth',block:'center'})};
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&sideDrawer.classList.contains('open'))closeDrawer()});
 
 function show(t){
   toast.textContent=t;
