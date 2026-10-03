@@ -1,4 +1,4 @@
-const CACHE_NAME = "radio-portal-v11-chat-notification-invite";
+const CACHE_NAME = "radio-portal-v12-chat-notification-status";
 const APP_SHELL = [
   "./",
   "./index.html",

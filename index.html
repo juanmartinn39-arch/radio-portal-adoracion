@@ -769,9 +769,17 @@ function showChatNotificationIntro(){
 function maybeOfferChatNotifications(){
   if(!chatNotificationsSupported())return;
   const saved=localStorage.getItem(CHAT_NOTIFICATIONS_KEY);
-  if(Notification.permission==='granted' && saved===null){
-    localStorage.setItem(CHAT_NOTIFICATIONS_KEY,'1');
+  if(Notification.permission==='granted'){
+    // Si el permiso del navegador ya estaba concedido, lo respetamos. Si el
+    // usuario no había elegido nada dentro de la radio, lo dejamos activado.
+    if(saved===null)localStorage.setItem(CHAT_NOTIFICATIONS_KEY,'1');
     updateChatNotificationsUI();
+    // Solo mostramos el aviso cuando las notificaciones están realmente activas
+    // dentro de la radio. Si el usuario las desactivó desde el menú (saved=0),
+    // no mostramos un estado incorrecto aunque Chrome conserve el permiso.
+    if(localStorage.getItem(CHAT_NOTIFICATIONS_KEY)==='1'){
+      setTimeout(()=>show('🔔 Notificaciones del chat activadas.'),1200);
+    }
     return;
   }
   if(Notification.permission==='denied'){
