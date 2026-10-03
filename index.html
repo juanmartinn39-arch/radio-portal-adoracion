@@ -1069,23 +1069,32 @@ function consumeIfOwnChatMessage(row){
 async function notifyNewChatMessage(row){
   if(!row || !chatNotificationsEnabled())return;
   if(consumeIfOwnChatMessage(row))return;
-  const chatIsVisible=chatModal.classList.contains('open') && !document.hidden;
-  if(chatIsVisible)return;
+
   const sender=String(row.name||'Oyente').trim()||'Oyente';
   const rawMessage=String(row.message||'').trim();
-  const body=(rawMessage.length>120?rawMessage.slice(0,117)+'…':rawMessage)||'Nuevo mensaje en el chat';
+  const preview=(rawMessage.length>110?rawMessage.slice(0,107)+'…':rawMessage)||'Nuevo mensaje en el chat';
+  const title='💬 Radio Portal de Adoración';
+  const body=sender+' escribió: “'+preview+'”';
   const tag='rpa-chat-'+(row.id!=null?String(row.id):Date.now());
+
   try{
     const reg=await navigator.serviceWorker.ready;
-    reg.active?.postMessage({
-      type:'SHOW_CHAT_NOTIFICATION',
-      title:sender+' escribió en el chat',
+    // Mostrar siempre el aviso, incluso si el chat está abierto en pantalla.
+    // Esto hace visible de inmediato quién escribió y qué mensaje llegó.
+    await reg.showNotification(title,{
       body,
+      icon:'./icon-192.png',
+      badge:'./icon-192.png',
       tag,
-      url:'./?open=chat'
+      renotify:true,
+      vibrate:[180,80,180],
+      timestamp:Date.now(),
+      data:{url:'./?open=chat'}
     });
   }catch(error){
     console.error('No se pudo mostrar la notificación:',error);
+    // Respaldo visual si el sistema bloquea el aviso emergente pero la app está abierta.
+    show('💬 '+sender+' escribió: '+preview);
   }
 }
 if(chatNotificationsBtn)chatNotificationsBtn.addEventListener('click',setChatNotificationsFromUserGesture);
@@ -1208,6 +1217,8 @@ document.getElementById('openChat').onclick=()=>{openModal(chatModal);loadChatMe
 document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>closeModal(document.getElementById(b.dataset.close)));
 [bibleModal,chatModal].forEach(m=>m.addEventListener('click',e=>{if(e.target===m)closeModal(m)}));
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){if(bibleModal.classList.contains('open'))closeModal(bibleModal);if(chatModal.classList.contains('open'))closeModal(chatModal)}});
+
+/* V15: aviso de chat visible siempre, con nombre y mensaje. */
 
 /* ===== V8: ACCIONES DEL MENÚ LATERAL ===== */
 document.getElementById('menuHome').onclick=()=>{closeDrawer();document.getElementById('inicio').scrollIntoView({behavior:'smooth',block:'start'})};

@@ -1,4 +1,4 @@
-const CACHE_NAME = "radio-portal-v14-cross-platform-install";
+const CACHE_NAME = "radio-portal-v15-chat-notifications";
 const APP_SHELL = [
   "./",
   "./index.html",
