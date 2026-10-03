@@ -315,6 +315,7 @@ body.drawer-open{overflow:hidden}
     <div class="drawer-divider"></div>
     <button class="drawer-item" id="moreOptionsBtn" type="button" aria-expanded="false"><span class="drawer-icon">⚙</span><span>Más opciones</span><span class="chev" id="moreChevron">›</span></button>
     <div class="drawer-more" id="drawerMore">
+      <button class="drawer-item" id="chatNotificationsBtn" type="button"><span class="drawer-icon">🔔</span><span>Notificaciones del chat <small id="chatNotificationsState" style="display:block;color:#8fb1cf;font-size:10px;font-weight:700;margin-top:2px">Desactivadas</small></span><span class="chev" id="chatNotificationsMark">○</span></button>
       <button class="drawer-item" id="wordDayMenuBtn" type="button"><span class="drawer-icon">☀</span><span>Palabra del día</span><span class="chev">›</span></button>
       <button class="drawer-item" id="copyLinkBtn" type="button"><span class="drawer-icon">⛓</span><span>Copiar enlace de la radio</span><span class="chev">›</span></button>
     </div>
@@ -728,6 +729,122 @@ let realtimeReady=false;
 let chatReadReady=false;
 chatName.value=localStorage.getItem('rpa_chat_name')||'';
 
+/* ===== NOTIFICACIONES DEL CHAT =====
+   En esta versión, las notificaciones funcionan mientras la web/app PWA siga
+   ejecutándose (incluida en segundo plano si Android no la cierra por completo).
+   El service worker también queda preparado para recibir Web Push en una etapa
+   posterior, cuando se configure el envío desde el servidor. */
+const CHAT_NOTIFICATIONS_KEY='rpa_chat_notifications_enabled';
+const chatNotificationsBtn=document.getElementById('chatNotificationsBtn');
+const chatNotificationsState=document.getElementById('chatNotificationsState');
+const chatNotificationsMark=document.getElementById('chatNotificationsMark');
+let recentOwnMessages=[];
+
+function chatNotificationsSupported(){
+  return 'Notification' in window && 'serviceWorker' in navigator;
+}
+function chatNotificationsEnabled(){
+  return localStorage.getItem(CHAT_NOTIFICATIONS_KEY)==='1' && Notification.permission==='granted';
+}
+function updateChatNotificationsUI(){
+  if(!chatNotificationsBtn)return;
+  if(!chatNotificationsSupported()){
+    chatNotificationsState.textContent='No compatible en este dispositivo';
+    chatNotificationsMark.textContent='×';
+    chatNotificationsBtn.disabled=true;
+    chatNotificationsBtn.style.opacity='.55';
+    return;
+  }
+  if(Notification.permission==='denied'){
+    chatNotificationsState.textContent='Bloqueadas por el navegador';
+    chatNotificationsMark.textContent='!';
+    return;
+  }
+  const on=chatNotificationsEnabled();
+  chatNotificationsState.textContent=on?'Activadas':'Desactivadas';
+  chatNotificationsMark.textContent=on?'●':'○';
+  chatNotificationsMark.style.color=on?'#10c957':'#82a9c9';
+}
+async function setChatNotificationsFromUserGesture(){
+  if(!chatNotificationsSupported()){show('Este dispositivo no permite notificaciones web.');return}
+  if(chatNotificationsEnabled()){
+    localStorage.setItem(CHAT_NOTIFICATIONS_KEY,'0');
+    updateChatNotificationsUI();
+    show('Notificaciones del chat desactivadas.');
+    return;
+  }
+  if(Notification.permission==='denied'){
+    localStorage.setItem(CHAT_NOTIFICATIONS_KEY,'0');
+    updateChatNotificationsUI();
+    show('Las notificaciones están bloqueadas. Habilítalas desde los permisos del navegador o de la app.');
+    return;
+  }
+  try{
+    const permission=await Notification.requestPermission();
+    if(permission==='granted'){
+      localStorage.setItem(CHAT_NOTIFICATIONS_KEY,'1');
+      updateChatNotificationsUI();
+      show('Notificaciones del chat activadas. 🔔');
+      const reg=await navigator.serviceWorker.ready;
+      reg.active?.postMessage({
+        type:'SHOW_CHAT_NOTIFICATION',
+        title:'Radio Portal de Adoración',
+        body:'Notificaciones del chat activadas.',
+        tag:'rpa-chat-enabled',
+        url:'./?open=chat'
+      });
+    }else{
+      localStorage.setItem(CHAT_NOTIFICATIONS_KEY,'0');
+      updateChatNotificationsUI();
+      show('No se activaron las notificaciones.');
+    }
+  }catch(error){
+    console.error('Error activando notificaciones:',error);
+    show('No se pudieron activar las notificaciones.');
+  }
+}
+function rememberOwnChatMessage(name,message){
+  const now=Date.now();
+  recentOwnMessages=recentOwnMessages.filter(x=>now-x.at<15000);
+  recentOwnMessages.push({name,message,at:now});
+}
+function consumeIfOwnChatMessage(row){
+  const now=Date.now();
+  recentOwnMessages=recentOwnMessages.filter(x=>now-x.at<15000);
+  const name=String(row?.name||'').trim();
+  const message=String(row?.message||'').trim();
+  const idx=recentOwnMessages.findIndex(x=>x.name===name&&x.message===message);
+  if(idx<0)return false;
+  recentOwnMessages.splice(idx,1);
+  return true;
+}
+async function notifyNewChatMessage(row){
+  if(!row || !chatNotificationsEnabled())return;
+  if(consumeIfOwnChatMessage(row))return;
+  // Si el usuario ya está mirando el chat, el mensaje se ve inmediatamente y
+  // evitamos duplicar el aviso en pantalla.
+  const chatIsVisible=chatModal.classList.contains('open') && !document.hidden;
+  if(chatIsVisible)return;
+  const sender=String(row.name||'Oyente').trim()||'Oyente';
+  const rawMessage=String(row.message||'').trim();
+  const body=(rawMessage.length>120?rawMessage.slice(0,117)+'…':rawMessage)||'Nuevo mensaje en el chat';
+  const tag='rpa-chat-'+(row.id!=null?String(row.id):Date.now());
+  try{
+    const reg=await navigator.serviceWorker.ready;
+    reg.active?.postMessage({
+      type:'SHOW_CHAT_NOTIFICATION',
+      title:sender+' escribió en el chat',
+      body,
+      tag,
+      url:'./?open=chat'
+    });
+  }catch(error){
+    console.error('No se pudo mostrar la notificación:',error);
+  }
+}
+if(chatNotificationsBtn)chatNotificationsBtn.addEventListener('click',setChatNotificationsFromUserGesture);
+updateChatNotificationsUI();
+
 function setChatStatus(){
   if(realtimeReady && chatReadReady){chatStatus.textContent='● EN VIVO';chatStatus.style.color='#10c957';return}
   if(realtimeReady){chatStatus.textContent='● CONECTADO';chatStatus.style.color='#f3c969';return}
@@ -804,6 +921,7 @@ chatForm.addEventListener('submit',async e=>{
   localStorage.setItem('rpa_chat_name',n);
   if(!supabaseClient){show('El chat no pudo conectarse.');return}
   chatSend.disabled=true;
+  rememberOwnChatMessage(n,m);
   try{
     // No pedimos que Supabase devuelva la fila insertada. Así el envío no depende
     // de la política SELECT; Realtime o la recarga posterior muestran el mensaje.
@@ -813,6 +931,7 @@ chatForm.addEventListener('submit',async e=>{
     show('Mensaje enviado.');
     setTimeout(()=>loadChatMessages({silent:true}),450);
   }catch(error){
+    recentOwnMessages=recentOwnMessages.filter(x=>!(x.name===n&&x.message===m));
     console.error('Error enviando mensaje:',error);
     show('No se pudo enviar el mensaje. Revisa la configuración del chat.');
   }finally{chatSend.disabled=false}
@@ -821,8 +940,11 @@ chatForm.addEventListener('submit',async e=>{
 let chatChannel=null;
 if(supabaseClient){
   chatChannel=supabaseClient
-    .channel('radio-portal-chat-v6')
-    .on('postgres_changes',{event:'INSERT',schema:'public',table:'chat_messages'},payload=>addOrUpdateChatMessage(payload.new))
+    .channel('radio-portal-chat-v10')
+    .on('postgres_changes',{event:'INSERT',schema:'public',table:'chat_messages'},payload=>{
+      addOrUpdateChatMessage(payload.new);
+      notifyNewChatMessage(payload.new);
+    })
     .subscribe(status=>{
       realtimeReady=status==='SUBSCRIBED';
       if(status==='CHANNEL_ERROR'||status==='TIMED_OUT'||status==='CLOSED')realtimeReady=false;
@@ -856,7 +978,27 @@ function show(t){
 }
 
 if('serviceWorker' in navigator){
-  window.addEventListener('load',async()=>{try{const reg=await navigator.serviceWorker.register('./service-worker.js',{updateViaCache:'none'});reg.update().catch(()=>{})}catch(e){}});
+  navigator.serviceWorker.addEventListener('message',event=>{
+    if(event.data?.type==='OPEN_CHAT'){
+      openModal(chatModal);
+      loadChatMessages();
+    }
+  });
+  window.addEventListener('load',async()=>{
+    try{
+      const reg=await navigator.serviceWorker.register('./service-worker.js',{updateViaCache:'none'});
+      reg.update().catch(()=>{});
+      updateChatNotificationsUI();
+      const params=new URLSearchParams(location.search);
+      if(params.get('open')==='chat'){
+        openModal(chatModal);
+        loadChatMessages();
+        params.delete('open');
+        const clean=params.toString()?location.pathname+'?'+params.toString()+location.hash:location.pathname+location.hash;
+        history.replaceState(null,'',clean);
+      }
+    }catch(e){console.error('Error registrando service worker:',e)}
+  });
 }
 </script>
 </body></html>
