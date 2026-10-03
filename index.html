@@ -740,6 +740,50 @@ const chatNotificationsState=document.getElementById('chatNotificationsState');
 const chatNotificationsMark=document.getElementById('chatNotificationsMark');
 let recentOwnMessages=[];
 
+/* Invitación simple al entrar por primera vez.
+   El navegador exige que el permiso real se solicite después de un toque del usuario,
+   por eso mostramos primero este cartel propio y el botón ACTIVA el permiso nativo. */
+function showChatNotificationIntro(){
+  if(document.getElementById('chatNotifIntro'))return;
+  const wrap=document.createElement('div');
+  wrap.id='chatNotifIntro';
+  wrap.style.cssText='position:fixed;inset:0;z-index:99999;background:rgba(0,5,15,.72);display:flex;align-items:flex-end;justify-content:center;padding:18px;backdrop-filter:blur(4px)';
+  wrap.innerHTML=`<div style="width:min(460px,100%);background:linear-gradient(160deg,#071c33,#03101f);border:1px solid rgba(18,216,255,.55);border-radius:24px;padding:20px;box-shadow:0 22px 60px rgba(0,0,0,.55);color:#fff;font-family:inherit">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px"><div style="font-size:32px">🔔</div><div><div style="font-weight:950;font-size:20px;line-height:1.1">Avisos del Chat en Vivo</div><div style="color:#9bc7df;font-size:12px;margin-top:4px">Radio Portal de Adoración</div></div></div>
+    <p style="margin:12px 0 17px;color:#e8f6ff;line-height:1.45;font-size:14px">¿Querés recibir una notificación cuando alguien escriba en el chat?</p>
+    <button id="chatNotifIntroAllow" type="button" style="width:100%;min-height:48px;border:0;border-radius:14px;background:linear-gradient(135deg,#10b9f2,#0876df);color:#fff;font-weight:950;font-size:15px">🔔 ACTIVAR NOTIFICACIONES</button>
+    <button id="chatNotifIntroLater" type="button" style="width:100%;min-height:42px;margin-top:7px;border:0;background:transparent;color:#9db6c9;font-weight:800">Ahora no</button>
+  </div>`;
+  document.body.appendChild(wrap);
+  document.getElementById('chatNotifIntroAllow').addEventListener('click',async()=>{
+    wrap.remove();
+    await setChatNotificationsFromUserGesture();
+  });
+  document.getElementById('chatNotifIntroLater').addEventListener('click',()=>{
+    localStorage.setItem(CHAT_NOTIFICATIONS_KEY,'0');
+    updateChatNotificationsUI();
+    wrap.remove();
+  });
+}
+
+function maybeOfferChatNotifications(){
+  if(!chatNotificationsSupported())return;
+  const saved=localStorage.getItem(CHAT_NOTIFICATIONS_KEY);
+  if(Notification.permission==='granted' && saved===null){
+    localStorage.setItem(CHAT_NOTIFICATIONS_KEY,'1');
+    updateChatNotificationsUI();
+    return;
+  }
+  if(Notification.permission==='denied'){
+    if(saved===null)localStorage.setItem(CHAT_NOTIFICATIONS_KEY,'0');
+    updateChatNotificationsUI();
+    return;
+  }
+  if(Notification.permission==='default' && saved===null){
+    setTimeout(showChatNotificationIntro,900);
+  }
+}
+
 function chatNotificationsSupported(){
   return 'Notification' in window && 'serviceWorker' in navigator;
 }
@@ -844,6 +888,7 @@ async function notifyNewChatMessage(row){
 }
 if(chatNotificationsBtn)chatNotificationsBtn.addEventListener('click',setChatNotificationsFromUserGesture);
 updateChatNotificationsUI();
+maybeOfferChatNotifications();
 
 function setChatStatus(){
   if(realtimeReady && chatReadReady){chatStatus.textContent='● EN VIVO';chatStatus.style.color='#10c957';return}
