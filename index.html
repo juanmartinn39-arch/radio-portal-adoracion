@@ -362,7 +362,7 @@ body.drawer-open{overflow:hidden}
   </section>
 </div>
 <div class="toast" id="toast"></div>
-<audio id="audio" preload="none" playsinline src="https://masservidor.net:8280/stream"></audio>
+<audio id="audio" preload="auto" autoplay playsinline src="https://masservidor.net:8280/stream"></audio>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const audio=document.getElementById('audio'),
@@ -380,6 +380,10 @@ drawerOverlay=document.getElementById('drawerOverlay'),
 connectedCount=document.getElementById('connectedCount'),
 listenerCount=document.getElementById('listenerCount');
 
+let userPausedRadio=false;
+window.__rpaAutoplayGatePending=true;
+window.__rpaInstallGatePending=true;
+
 function setPlaying(on){
   player.classList.toggle('playing',on);
   wave.classList.toggle('playing',on);
@@ -388,17 +392,100 @@ function setPlaying(on){
     : '<path d="M8 5v14l11-7z"/>';
   btn.setAttribute('aria-label',on?'Pausar radio':'Reproducir radio');
 }
+function closeAutoplayPrompt(){
+  document.getElementById('autoplayPrompt')?.remove();
+}
+function continueStartupAfterAutoplay(){
+  window.__rpaAutoplayGatePending=false;
+  setTimeout(()=>{
+    try{
+      if(typeof maybeOfferAutoInstall==='function') maybeOfferAutoInstall();
+      else{
+        window.__rpaInstallGatePending=false;
+        if(typeof maybeOfferChatNotifications==='function') maybeOfferChatNotifications();
+      }
+    }catch(_){
+      window.__rpaInstallGatePending=false;
+      try{ if(typeof maybeOfferChatNotifications==='function') maybeOfferChatNotifications(); }catch(__){ }
+    }
+  },220);
+}
+function showAutoplayPrompt(){
+  if(document.getElementById('autoplayPrompt') || !audio.paused)return;
+  const wrap=document.createElement('div');
+  wrap.id='autoplayPrompt';
+  wrap.style.cssText='position:fixed;inset:0;z-index:100010;background:rgba(0,5,15,.82);display:flex;align-items:center;justify-content:center;padding:18px;backdrop-filter:blur(5px)';
+  wrap.innerHTML=`<div style="width:min(460px,100%);background:linear-gradient(160deg,#071c33,#03101f);border:1px solid rgba(18,216,255,.65);border-radius:26px;padding:22px;box-shadow:0 24px 70px rgba(0,0,0,.62),0 0 34px rgba(18,216,255,.12);color:#fff;font-family:inherit;text-align:center">
+    <div style="width:68px;height:68px;margin:0 auto 14px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(145deg,#10b9f2,#0876df);box-shadow:0 0 28px rgba(18,216,255,.4);font-size:31px">▶</div>
+    <div style="font-weight:950;font-size:23px;line-height:1.12">Tocá para escuchar</div>
+    <div style="color:#12d8ff;font-weight:900;font-size:16px;margin-top:5px">Radio Portal de Adoración</div>
+    <p style="margin:14px 0 18px;color:#dceeff;line-height:1.5;font-size:14px">Tu dispositivo bloqueó el inicio automático del audio. Con un solo toque comienza la transmisión en vivo.</p>
+    <button id="autoplayStartBtn" type="button" style="width:100%;min-height:52px;border:0;border-radius:15px;background:linear-gradient(135deg,#10b9f2,#0876df);color:#fff;font-weight:950;font-size:16px">▶ ESCUCHAR AHORA</button>
+    <button id="autoplayLaterBtn" type="button" style="width:100%;min-height:42px;margin-top:7px;border:0;background:transparent;color:#9db6c9;font-weight:800">Ahora no</button>
+  </div>`;
+  document.body.appendChild(wrap);
+  document.getElementById('autoplayStartBtn')?.addEventListener('click',async()=>{
+    userPausedRadio=false;
+    try{
+      await audio.play();
+      closeAutoplayPrompt();
+      setPlaying(true);
+      continueStartupAfterAutoplay();
+    }catch(error){
+      console.warn('El navegador todavía bloquea el audio:',error);
+      show('No se pudo iniciar la radio. Revisá el volumen y la conexión a Internet.');
+    }
+  });
+  document.getElementById('autoplayLaterBtn')?.addEventListener('click',()=>{
+    userPausedRadio=true;
+    closeAutoplayPrompt();
+    continueStartupAfterAutoplay();
+  });
+}
+async function attemptInitialAutoplay(){
+  if(userPausedRadio || !audio.paused){
+    closeAutoplayPrompt();
+    continueStartupAfterAutoplay();
+    return;
+  }
+  try{
+    await audio.play();
+    closeAutoplayPrompt();
+    setPlaying(true);
+    continueStartupAfterAutoplay();
+  }catch(error){
+    const name=String(error?.name||'');
+    console.info('Autoplay no disponible sin interacción:',name||error);
+    if(name==='NotSupportedError'){
+      continueStartupAfterAutoplay();
+      show('La señal de radio no está disponible en este momento.');
+      return;
+    }
+    showAutoplayPrompt();
+    window.__rpaAutoplayGatePending=false;
+  }
+}
 btn.onclick=async()=>{
   try{
-    if(audio.paused){await audio.play();setPlaying(true)}
-    else{audio.pause();setPlaying(false)}
+    if(audio.paused){
+      userPausedRadio=false;
+      await audio.play();
+      closeAutoplayPrompt();
+      setPlaying(true);
+    }else{
+      userPausedRadio=true;
+      audio.pause();
+      closeAutoplayPrompt();
+      setPlaying(false);
+    }
   }catch(e){show('No se pudo iniciar la radio. Revisa tu conexión a Internet.')}
 };
-audio.onplay=()=>{setPlaying(true);updatePresenceListening(true)};
+audio.onplay=()=>{closeAutoplayPrompt();setPlaying(true);updatePresenceListening(true)};
 audio.onpause=()=>{setPlaying(false);updatePresenceListening(false)};
 audio.onerror=()=>{setPlaying(false);updatePresenceListening(false);show('La señal de radio no está disponible en este momento.')};
 vol.oninput=()=>audio.volume=+vol.value;
 audio.volume=.85;
+window.addEventListener('load',()=>setTimeout(attemptInitialAutoplay,120),{once:true});
 
 document.getElementById('prevBtn').onclick=()=>show('Radio en vivo: no hay pista anterior.');
 document.getElementById('nextBtn').onclick=()=>show('Radio en vivo: no hay pista siguiente.');
@@ -513,7 +600,7 @@ window.addEventListener('focus',()=>updateDailyWord(false));
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)updateDailyWord(false)});
 
 /* ===== INSTALACIÓN PWA MULTIPLATAFORMA =====
-   v14
+   v19
    - Android / Chrome / Edge: usa el instalador nativo cuando el navegador lo ofrece.
    - iPhone / iPad: Apple no permite abrir el instalador desde JavaScript; mostramos
      una guía clara para Compartir → Agregar a pantalla de inicio.
@@ -563,7 +650,7 @@ function syncInstallUI(){
   }
 }
 
-function showInstallModal(title,bodyHtml,primary='ENTENDIDO'){
+function showInstallModal(title,bodyHtml,primary='ENTENDIDO',onClose=null){
   document.getElementById('installHelpModal')?.remove();
   const wrap=document.createElement('div');
   wrap.id='installHelpModal';
@@ -574,12 +661,18 @@ function showInstallModal(title,bodyHtml,primary='ENTENDIDO'){
     <button id="installHelpOk" type="button" style="width:100%;min-height:48px;margin-top:17px;border:0;border-radius:14px;background:linear-gradient(135deg,#10b9f2,#0876df);color:#fff;font-weight:950;font-size:15px">${primary}</button>
   </div>`;
   document.body.appendChild(wrap);
-  const close=()=>wrap.remove();
+  let closed=false;
+  const close=()=>{
+    if(closed)return;
+    closed=true;
+    wrap.remove();
+    try{ if(typeof onClose==='function') onClose(); }catch(_){ }
+  };
   document.getElementById('installHelpOk')?.addEventListener('click',close,{once:true});
   wrap.addEventListener('click',e=>{ if(e.target===wrap) close(); });
 }
 
-function showInstallHelp(){
+function showInstallHelp(onClose=null){
   if(isStandaloneMode()){
     syncInstallUI();
     show('Radio Portal ya está instalada.');
@@ -594,7 +687,8 @@ function showInstallHelp(){
         <div style="margin:8px 0"><b>2.</b> Elegí <b>“Agregar a pantalla de inicio”</b>.</div>
         <div style="margin:8px 0"><b>3.</b> Tocá <b>“Agregar”</b> y después abrí Radio Portal desde el nuevo ícono.</div>
       </div>
-      <div style="color:#a9bfd5;font-size:12px">No se descarga desde App Store. En iPhone/iPad la instalación se hace desde el menú Compartir. Cuando abras la app ya instalada, la opción <b>Instalar app</b> desaparecerá automáticamente.</div>`
+      <div style="color:#a9bfd5;font-size:12px">No se descarga desde App Store. En iPhone/iPad la instalación se hace desde el menú Compartir. Cuando abras la app ya instalada, la opción <b>Instalar app</b> desaparecerá automáticamente.</div>`,
+      'ENTENDIDO',onClose
     );
     return;
   }
@@ -602,23 +696,133 @@ function showInstallHelp(){
     showInstallModal('Instalar en Mac',
       `<div style="margin:10px 0"><b>Safari:</b> abrí <b>Archivo → Añadir al Dock</b>.</div>
        <div style="margin:10px 0"><b>Chrome/Edge:</b> usá el ícono de instalación de la barra de direcciones o el menú del navegador.</div>
-       <div style="color:#a9bfd5;font-size:12px">Al abrirla como app instalada, la opción “Instalar app” se oculta automáticamente.</div>`);
+       <div style="color:#a9bfd5;font-size:12px">Al abrirla como app instalada, la opción “Instalar app” se oculta automáticamente.</div>`, 'ENTENDIDO',onClose);
     return;
   }
   if(isAndroidInstallDevice()){
     showInstallModal('Instalar en Android',
       `<div style="margin:10px 0">Abrí el menú <b>⋮</b> del navegador y elegí <b>“Instalar aplicación”</b> o <b>“Agregar a pantalla de inicio”</b>.</div>
-       <div style="color:#a9bfd5;font-size:12px">Si Chrome ofrece el instalador nativo, este botón lo abrirá automáticamente.</div>`);
+       <div style="color:#a9bfd5;font-size:12px">Si Chrome ofrece el instalador nativo, este botón lo abrirá automáticamente.</div>`, 'ENTENDIDO',onClose);
     return;
   }
   if(isWindowsInstallDevice()){
     showInstallModal('Instalar en PC',
       `<div style="margin:10px 0">En <b>Chrome o Edge</b>, buscá el ícono de instalación en la barra de direcciones o abrí <b>⋮ → Instalar Radio Portal de Adoración</b>.</div>
-       <div style="color:#a9bfd5;font-size:12px">Después de abrir la versión instalada, “Instalar app” se oculta automáticamente.</div>`);
+       <div style="color:#a9bfd5;font-size:12px">Después de abrir la versión instalada, “Instalar app” se oculta automáticamente.</div>`, 'ENTENDIDO',onClose);
     return;
   }
   showInstallModal('Instalar Radio Portal',
-    `<div style="margin:10px 0">Abrí el menú de tu navegador y buscá <b>“Instalar aplicación”</b>, <b>“Agregar a pantalla de inicio”</b> o una opción similar.</div>`);
+    `<div style="margin:10px 0">Abrí el menú de tu navegador y buscá <b>“Instalar aplicación”</b>, <b>“Agregar a pantalla de inicio”</b> o una opción similar.</div>`, 'ENTENDIDO',onClose);
+}
+
+
+/* ===== OFERTA AUTOMÁTICA DE INSTALACIÓN (V19) =====
+   Ningún navegador permite instalar una PWA sin una acción del usuario.
+   Por eso, al abrir Radio Portal y después de resolver el audio, mostramos
+   automáticamente un cartel de instalación si todavía no se abrió en modo app.
+   - Android / PC compatible: un toque abre el instalador nativo.
+   - iPhone / iPad: muestra directamente los pasos de Compartir → Agregar a inicio.
+   - Una vez abierta como app instalada (standalone), el cartel y los botones
+     de instalación desaparecen automáticamente. */
+const AUTO_INSTALL_SESSION_KEY='rpa_auto_install_offer_v19';
+let autoInstallWaitTimer=null;
+
+function closeAutoInstallPrompt(){
+  document.getElementById('autoInstallPrompt')?.remove();
+}
+function continueStartupAfterInstall(){
+  window.__rpaInstallGatePending=false;
+  closeAutoInstallPrompt();
+  setTimeout(()=>{
+    try{ if(typeof maybeOfferChatNotifications==='function') maybeOfferChatNotifications(); }catch(_){ }
+  },220);
+}
+function autoInstallPlatformText(){
+  if(isIOSInstallDevice()){
+    return {
+      note:'En iPhone/iPad Apple requiere agregar la web app manualmente desde el menú Compartir.',
+      steps:`<div style="margin:12px 0;padding:12px 13px;border-radius:15px;background:rgba(18,216,255,.08);border:1px solid rgba(18,216,255,.24);text-align:left">
+        <div style="font-weight:900;margin-bottom:8px">Seguí estos 3 pasos:</div>
+        <div style="margin:7px 0"><b>1.</b> Tocá <b>Compartir</b> <span style="font-size:19px">□↑</span>.</div>
+        <div style="margin:7px 0"><b>2.</b> Elegí <b>“Agregar a pantalla de inicio”</b>.</div>
+        <div style="margin:7px 0"><b>3.</b> Tocá <b>“Agregar”</b> y abrí Radio Portal desde el nuevo ícono.</div>
+      </div>`,
+      button:'ENTENDIDO'
+    };
+  }
+  if(isAndroidInstallDevice()) return {note:'Instalala en tu celular para abrir Radio Portal con un solo toque.',steps:'',button:'📲 INSTALAR APP'};
+  if(isWindowsInstallDevice() || isMacDesktop()) return {note:'Instalala como aplicación en tu computadora para abrir Radio Portal directamente.',steps:'',button:'📲 INSTALAR APP'};
+  return {note:'Podés agregar Radio Portal a tu dispositivo como una aplicación.',steps:'',button:'📲 INSTALAR APP'};
+}
+function showAutoInstallPrompt(){
+  if(isStandaloneMode()){
+    sessionStorage.setItem(AUTO_INSTALL_SESSION_KEY,'1');
+    continueStartupAfterInstall();
+    return;
+  }
+  if(document.getElementById('autoInstallPrompt'))return;
+  sessionStorage.setItem(AUTO_INSTALL_SESSION_KEY,'1');
+  const info=autoInstallPlatformText();
+  const wrap=document.createElement('div');
+  wrap.id='autoInstallPrompt';
+  wrap.style.cssText='position:fixed;inset:0;z-index:100008;background:rgba(0,5,15,.82);display:flex;align-items:center;justify-content:center;padding:18px;backdrop-filter:blur(5px)';
+  wrap.innerHTML=`<div style="width:min(460px,100%);background:linear-gradient(160deg,#071c33,#03101f);border:1px solid rgba(18,216,255,.65);border-radius:26px;padding:22px;box-shadow:0 24px 70px rgba(0,0,0,.62),0 0 34px rgba(18,216,255,.12);color:#fff;font-family:inherit;text-align:center">
+    <div style="width:68px;height:68px;margin:0 auto 14px;border-radius:18px;display:grid;place-items:center;background:linear-gradient(145deg,#10b9f2,#0876df);box-shadow:0 0 28px rgba(18,216,255,.32);font-size:34px">📲</div>
+    <div style="font-weight:950;font-size:23px;line-height:1.12">Instalá Radio Portal</div>
+    <div style="color:#12d8ff;font-weight:900;font-size:16px;margin-top:5px">Radio Portal de Adoración</div>
+    <p style="margin:14px 0 12px;color:#dceeff;line-height:1.5;font-size:14px">${info.note}</p>
+    ${info.steps}
+    <button id="autoInstallPrimary" type="button" style="width:100%;min-height:52px;border:0;border-radius:15px;background:linear-gradient(135deg,#10b9f2,#0876df);color:#fff;font-weight:950;font-size:16px">${info.button}</button>
+    <button id="autoInstallLater" type="button" style="width:100%;min-height:42px;margin-top:7px;border:0;background:transparent;color:#9db6c9;font-weight:800">Ahora no</button>
+  </div>`;
+  document.body.appendChild(wrap);
+
+  document.getElementById('autoInstallLater')?.addEventListener('click',()=>{
+    continueStartupAfterInstall();
+  },{once:true});
+
+  document.getElementById('autoInstallPrimary')?.addEventListener('click',async()=>{
+    // iPhone/iPad no permite abrir un instalador nativo desde JavaScript.
+    if(isIOSInstallDevice()){
+      closeAutoInstallPrompt();
+      showInstallHelp(continueStartupAfterInstall);
+      return;
+    }
+    closeAutoInstallPrompt();
+    // Android / PC / navegadores compatibles: usamos exactamente el mismo
+    // instalador nativo que el botón “INSTALAR APP” de la pantalla principal.
+    await requestInstall(continueStartupAfterInstall);
+  },{once:true});
+}
+function maybeOfferAutoInstall(){
+  syncInstallUI();
+  if(isStandaloneMode()){
+    window.__rpaInstallGatePending=false;
+    sessionStorage.setItem(AUTO_INSTALL_SESSION_KEY,'1');
+    setTimeout(()=>{ try{ if(typeof maybeOfferChatNotifications==='function') maybeOfferChatNotifications(); }catch(_){ } },180);
+    return;
+  }
+  if(sessionStorage.getItem(AUTO_INSTALL_SESSION_KEY)==='1'){
+    continueStartupAfterInstall();
+    return;
+  }
+  // iPhone/iPad no emite beforeinstallprompt: mostramos la guía de inmediato.
+  if(isIOSInstallDevice()){
+    showAutoInstallPrompt();
+    return;
+  }
+  // En Android/PC esperamos un instante para que Chrome/Edge entregue
+  // beforeinstallprompt y así el botón pueda abrir el instalador nativo.
+  let attempts=0;
+  clearInterval(autoInstallWaitTimer);
+  autoInstallWaitTimer=setInterval(()=>{
+    attempts++;
+    if(deferredInstallPrompt || installReady || attempts>=8){
+      clearInterval(autoInstallWaitTimer);
+      autoInstallWaitTimer=null;
+      showAutoInstallPrompt();
+    }
+  },250);
 }
 
 syncInstallUI();
@@ -632,17 +836,39 @@ window.addEventListener('beforeinstallprompt', (e) => {
   syncInstallUI();
 });
 
-async function requestInstall(){
+async function waitForNativeInstallPrompt(timeoutMs=2200){
+  if(deferredInstallPrompt) return deferredInstallPrompt;
+  const start=Date.now();
+  while(!deferredInstallPrompt && (Date.now()-start)<timeoutMs){
+    await new Promise(resolve=>setTimeout(resolve,100));
+  }
+  return deferredInstallPrompt;
+}
+
+async function requestInstall(onDone=null){
   closeDrawer();
   if(isStandaloneMode()){
     syncInstallUI();
+    if(typeof onDone==='function') onDone();
     return;
   }
-  if(!deferredInstallPrompt){
-    showInstallHelp();
+
+  // Apple no expone beforeinstallprompt en iPhone/iPad. Mostramos la guía
+  // nativa de “Compartir → Agregar a pantalla de inicio”.
+  if(isIOSInstallDevice()){
+    showInstallHelp(onDone);
     return;
   }
-  const promptEvent=deferredInstallPrompt;
+
+  // En Android/Chrome/Edge/PC esperamos un momento por si el navegador todavía
+  // está preparando beforeinstallprompt. Así vuelve el comportamiento anterior:
+  // tocar INSTALAR APP → aparece el cuadro nativo “Instalar / Agregar”.
+  const promptEvent=deferredInstallPrompt || await waitForNativeInstallPrompt();
+  if(!promptEvent){
+    showInstallHelp(onDone);
+    return;
+  }
+
   deferredInstallPrompt=null;
   installReady=false;
   try{
@@ -655,20 +881,25 @@ async function requestInstall(){
     }
   }catch(e){
     console.warn('Instalador nativo no disponible:',e);
-    showInstallHelp();
+    showInstallHelp(onDone);
+    return;
   }finally{
     syncInstallUI();
   }
+  if(typeof onDone==='function') setTimeout(onDone,180);
 }
 
-installBtn?.addEventListener('click',requestInstall);
-drawerInstallBtn?.addEventListener('click',requestInstall);
+installBtn?.addEventListener('click',()=>requestInstall());
+drawerInstallBtn?.addEventListener('click',()=>requestInstall());
 
 window.addEventListener('appinstalled', () => {
   deferredInstallPrompt = null;
   installReady=false;
   syncInstallUI();
+  closeAutoInstallPrompt();
+  window.__rpaInstallGatePending=false;
   show('¡Radio Portal de Adoración quedó instalada!');
+  setTimeout(()=>{ try{ if(typeof maybeOfferChatNotifications==='function') maybeOfferChatNotifications(); }catch(_){ } },250);
 });
 
 // Si el modo cambia o se vuelve desde otra pantalla, revisamos de nuevo.
@@ -998,6 +1229,20 @@ function showChatNotificationIntro(){
 function maybeOfferChatNotifications(){
   updateChatNotificationsUI();
 
+  // Primero resolvemos el inicio de la radio. Si el navegador bloquea el autoplay,
+  // evitamos superponer el cartel de notificaciones con el botón ESCUCHAR AHORA.
+  if(window.__rpaAutoplayGatePending || document.getElementById('autoplayPrompt') ||
+     window.__rpaInstallGatePending || document.getElementById('autoInstallPrompt') ||
+     document.getElementById('installHelpModal')){
+    setTimeout(maybeOfferChatNotifications,800);
+    return;
+  }
+
+  // En iPhone/iPad las notificaciones web se habilitan desde la web app instalada.
+  // Si todavía está abierta como pestaña, dejamos la invitación pendiente para que
+  // aparezca al abrir Radio Portal desde el ícono de la pantalla de inicio.
+  if(isIOSLike() && !isStandaloneWebApp()) return;
+
   // Si ya están activadas, no volvemos a pedir permiso: la elección ya fue hecha.
   if(chatNotificationsEnabled()){
     localStorage.setItem(CHAT_NOTIFICATION_ONBOARDING_KEY,'1');
@@ -1295,6 +1540,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'){if(bibleModal.class
 
 /* V15: aviso de chat visible siempre, con nombre y mensaje. */
 /* V16: contador de conectados y oyentes mediante Supabase Realtime Presence. */
+/* V17: autoplay inteligente multiplataforma con botón de un toque cuando el navegador lo bloquea. */
 
 /* ===== V8: ACCIONES DEL MENÚ LATERAL ===== */
 document.getElementById('menuHome').onclick=()=>{closeDrawer();document.getElementById('inicio').scrollIntoView({behavior:'smooth',block:'start'})};
