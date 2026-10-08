@@ -1,4 +1,4 @@
-const CACHE_NAME = "radio-portal-v19-native-install";
+const CACHE_NAME = "radio-portal-v21-biblia-rapida-sin-contador";
 const APP_SHELL = [
   "./",
   "./index.html",
